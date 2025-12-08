@@ -197,7 +197,7 @@
     <div class="container">
         <div class="card normal">
             <h2 style="color: var(--neon-blue)">General Admission</h2>
-            <div class="price">0.01 SEP</div>
+            <div class="price">0.0001 SEP</div>
             <ul>
                 <li>⚡ Access to Main Dance Floor</li>
                 <li>🎵 Live DJ Sets (Deadmau5)</li>
@@ -208,7 +208,7 @@
 
         <div class="card premium">
             <h2 style="color: var(--neon-pink)">VIP Lounge</h2>
-            <div class="price">0.05 SEP</div>
+            <div class="price">0.005 SEP</div>
             <ul>
                 <li>🍸 Open Bar Access (Unlimited)</li>
                 <li>📸 Meet & Greet with Artists</li>
@@ -387,7 +387,7 @@
             if (!contract) return alert("Please Connect Wallet First");
             
             try {
-                const price = type === 'normal' ? "0.01" : "0.05";
+                const price = type === 'normal' ? "0.0001" : "0.005";
                 log(`Initiating Purchase...`);
 
                 let tx;
