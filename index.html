@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEON HORIZON | CLUB ACCESS</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-pink: #ff00ff;
+            --neon-green: #00ff9d;
+            --bg: #050510;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            background-color: var(--bg);
+            color: white;
+            font-family: 'Rajdhani', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+            background-image: linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+       
+        .navbar {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 40px;
+            box-sizing: border-box;
+            background: rgba(0,0,0,0.8);
+            border-bottom: 1px solid var(--neon-blue);
+            position: fixed;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand { font-family: 'Share Tech Mono', monospace; font-size: 1.5rem; color: var(--neon-blue); text-shadow: 0 0 10px var(--neon-blue); }
+        
+        #network-badge {
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            background: #111;
+            color: #555;
+            border: 1px solid #333;
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        
+        .hero { text-align: center; margin-top: 140px; margin-bottom: 40px; }
+        h1 { font-size: 4.5rem; margin: 0; text-shadow: 0 0 20px var(--neon-blue); line-height: 1; letter-spacing: 2px; }
+        .subtitle { color: var(--neon-pink); letter-spacing: 3px; margin-top: 10px; font-weight: bold; font-size: 1.2rem; }
+
+        .container {
+            display: flex;
+            gap: 40px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+       
+        .card {
+            background: var(--glass);
+            border: 1px solid #333;
+            padding: 30px;
+            width: 300px;
+            border-radius: 10px;
+            text-align: center;
+            transition: 0.3s;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+        .card:hover { transform: translateY(-10px); box-shadow: 0 0 30px rgba(0,243,255,0.15); }
+        .normal { border-top: 4px solid var(--neon-blue); }
+        .premium { border-top: 4px solid var(--neon-pink); }
+
+        h2 { margin: 0 0 10px 0; text-transform: uppercase; font-size: 1.8rem; }
+        .price { font-size: 2.2rem; font-weight: bold; margin: 15px 0; font-family: 'Share Tech Mono', monospace; }
+        
+        ul { text-align: left; padding-left: 20px; color: #ddd; margin-bottom: 30px; font-size: 1rem; line-height: 1.6; }
+        li { margin-bottom: 8px; }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background: rgba(0,0,0,0.5);
+            cursor: pointer;
+            text-transform: uppercase;
+            font-family: 'Rajdhani', sans-serif;
+            transition: 0.2s;
+            color: white;
+            border: 1px solid #555;
+        }
+        button:hover { background: white; color: black; border-color: white; box-shadow: 0 0 20px white; }
+
+        #wallet-btn { width: auto; padding: 8px 20px; font-family: 'Share Tech Mono', monospace; }
+
+       
+        .history-section {
+            width: 80%;
+            max-width: 800px;
+            margin-top: 60px;
+            background: rgba(0,0,0,0.8);
+            border: 1px solid #333;
+            padding: 20px;
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--neon-green);
+        }
+
+        table { width: 100%; border-collapse: collapse; color: #aaa; font-size: 0.9rem; }
+        th { text-align: left; border-bottom: 1px solid #444; padding: 10px; color: white; }
+        td { border-bottom: 1px solid #222; padding: 10px; font-family: monospace; }
+        tr:hover { background: rgba(255,255,255,0.05); }
+
+    
+        .terminal-window {
+            margin-top: 40px;
+            margin-bottom: 50px;
+            width: 80%;
+            max-width: 700px;
+            background: #050505;
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 0;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
+
+        .terminal-header {
+            background: #1a1a1a;
+            padding: 8px 15px;
+            color: #888;
+            font-size: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            font-family: sans-serif;
+            border-bottom: 1px solid #333;
+        }
+
+        #system-log {
+            padding: 15px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--neon-green);
+            height: 150px;
+            overflow-y: auto;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .log-entry { opacity: 0.7; }
+        .log-entry.new { color: white; font-weight: bold; opacity: 1; text-shadow: 0 0 5px var(--neon-green); }
+        .log-entry.error { color: #ff5555; text-shadow: 0 0 5px red; }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="brand">NEON//HORIZON</div>
+        <div style="display: flex; gap: 20px; align-items: center;">
+            <div id="network-badge">OFFLINE</div>
+            <button id="wallet-btn" onclick="connectWallet()">CONNECT WALLET</button>
+        </div>
+    </div>
+
+    <div class="hero">
+        <div style="color: var(--neon-green); font-size: 1rem; letter-spacing: 2px; margin-bottom: 10px;">🔴 LIVE TONIGHT // SEPOLIA METAVERSE</div>
+        <h1 id="dynamic-event-name">LOADING EVENT...</h1>
+        <div class="subtitle" id="dynamic-date">CONNECTING TO DOOR SYSTEM...</div>
+        <div style="margin-top: 15px; color: #888; font-family: 'Share Tech Mono', monospace;">RESTRICTED ACCESS: NFT HOLDERS ONLY</div>
+    </div>
+
+    <div class="container">
+        <div class="card normal">
+            <h2 style="color: var(--neon-blue)">General Admission</h2>
+            <div class="price">0.01 SEP</div>
+            <ul>
+                <li>⚡ Access to Main Dance Floor</li>
+                <li>🎵 Live DJ Sets (Deadmau5)</li>
+                <li>🍺 1 Free Drink Token (Airdrop)</li>
+            </ul>
+            <button onclick="buyTicket('normal')">MINT ENTRY PASS</button>
+        </div>
+
+        <div class="card premium">
+            <h2 style="color: var(--neon-pink)">VIP Lounge</h2>
+            <div class="price">0.05 SEP</div>
+            <ul>
+                <li>🍸 Open Bar Access (Unlimited)</li>
+                <li>📸 Meet & Greet with Artists</li>
+                <li>🚀 Skip the Line (Fast Track)</li>
+            </ul>
+            <button onclick="buyTicket('premium')">MINT VIP ACCESS</button>
+        </div>
+    </div>
+
+    <div class="history-section" id="history-panel" style="display:none;">
+        <div class="history-header">
+            <span>USER DATABASE // HISTORY</span>
+            <span id="total-owned">TOTAL TICKETS: LOADING...</span>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>DATE</th>
+                    <th>TICKET TIER</th>
+                    <th>TX HASH</th>
+                </tr>
+            </thead>
+            <tbody id="history-table-body">
+                </tbody>
+        </table>
+    </div>
+
+    <div class="terminal-window">
+        <div class="terminal-header">
+            <span>SYSTEM: DOOR_PROTOCOL_V2.EXE</span>
+            <span>STATUS: ACTIVE</span>
+        </div>
+        <div id="system-log">
+            </div>
+    </div>
+
+    <script>
+  
+        const CONTRACT_ADDRESS = "0x5005213025865bf26e73526F5CddE3f8e2fb4fDA";
+        const SEPOLIA_ID = "11155111"; 
+
+        const ABI = [
+            "function buyNormalTicket() external payable",
+            "function buyPremiumTicket() external payable",
+            "function balanceOf(address owner) external view returns (uint256)" // ADDED THIS
+        ];
+
+        let contract, signer, userAddress;
+
+  
+        function updateDailyEvent() {
+            const date = new Date();
+            const dateString = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase();
+            const dayIndex = date.getDay(); 
+            const events = [
+                "SUNDAY SUNSET SESSIONS",   
+                "CYBER MONDAY MADNESS",     
+                "TECHNO TUESDAY",           
+                "WICKED WEDNESDAY RAVE",           
+                "THIRSTY THURSDAY HOUSE",           
+                "FUTURE FRIDAY: NEON NIGHTS",       
+                "SATURDAY SUPERNOVA"      
+            ];
+            document.getElementById("dynamic-event-name").innerText = events[dayIndex];
+            document.getElementById("dynamic-date").innerText = "DOORS OPEN: " + dateString + " | 10:00 PM EST";
+        }
+
+
+        function log(msg, type="info") {
+            const box = document.getElementById("system-log");
+            const entry = document.createElement("div");
+            const time = new Date().toLocaleTimeString([], { hour12: false });
+            entry.className = "log-entry " + (type === "error" ? "error" : "new");
+            entry.innerText = `[${time}] > ${msg}`;
+            box.appendChild(entry);
+            box.scrollTop = box.scrollHeight;
+        }
+
+
+        async function loadHistory() {
+         
+            try {
+                const count = await contract.balanceOf(userAddress);
+                document.getElementById("total-owned").innerText = "TOTAL TICKETS: " + count;
+            } catch(e) { console.log("Error fetching balance"); }
+
+
+            const history = JSON.parse(localStorage.getItem('ticketHistory') || '[]');
+            const tbody = document.getElementById("history-table-body");
+            tbody.innerHTML = "";
+
+            if(history.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='3' style='text-align:center;'>NO PURCHASE HISTORY FOUND</td></tr>";
+            } else {
+                history.reverse().forEach(tx => { 
+                    const row = `<tr>
+                        <td>${tx.date}</td>
+                        <td style="color:${tx.type === 'VIP' ? '#ff00ff' : '#00f3ff'}">${tx.type}</td>
+                        <td><a href="https://sepolia.etherscan.io/tx/${tx.hash}" target="_blank" style="color:#888;">${tx.hash.substring(0,10)}...</a></td>
+                    </tr>`;
+                    tbody.innerHTML += row;
+                });
+            }
+            
+            document.getElementById("history-panel").style.display = "block";
+        }
+
+        function saveTransaction(type, hash) {
+            const history = JSON.parse(localStorage.getItem('ticketHistory') || '[]');
+            const newTx = {
+                date: new Date().toLocaleString(),
+                type: type === 'normal' ? 'STANDARD' : 'VIP',
+                hash: hash
+            };
+            history.push(newTx);
+            localStorage.setItem('ticketHistory', JSON.stringify(history));
+            loadHistory(); 
+        }
+
+        window.onload = async function() {
+            updateDailyEvent();
+            log("SECURITY: Door Protocol Online.");
+            
+            if(window.ethereum) {
+                window.ethereum.on('chainChanged', () => window.location.reload());
+                checkNetwork();
+            } else {
+                log("CRITICAL: No crypto wallet found.", "error");
+            }
+        };
+
+        async function checkNetwork() {
+            if (!window.ethereum) return;
+            const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+            const badge = document.getElementById("network-badge");
+            
+            if (parseInt(chainId, 16).toString() === SEPOLIA_ID) {
+                badge.innerText = "● SEPOLIA LIVE";
+                badge.style.color = "#00ff9d";
+                badge.style.borderColor = "#00ff9d";
+            } else {
+                badge.innerText = "⚠ WRONG NETWORK";
+                badge.style.color = "red";
+                badge.style.borderColor = "red";
+            }
+        }
+
+        async function connectWallet() {
+            if (!window.ethereum) return alert("Install MetaMask!");
+            
+            const provider = new ethers.BrowserProvider(window.ethereum);
+            try {
+                await window.ethereum.request({
+                    method: "wallet_requestPermissions",
+                    params: [{ eth_accounts: {} }]
+                });
+                
+                await provider.send("eth_requestAccounts", []);
+                signer = await provider.getSigner();
+                userAddress = await signer.getAddress();
+                
+                document.getElementById("wallet-btn").innerText = userAddress.substring(0,6) + "...";
+                document.getElementById("wallet-btn").style.borderColor = "#00ff9d";
+                document.getElementById("wallet-btn").style.color = "#00ff9d";
+
+                contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+                
+                log(`Identity Verified: ${userAddress}`);
+                loadHistory(); 
+            } catch (err) {
+                log("User denied access.", "error");
+            }
+        }
+
+        async function buyTicket(type) {
+            if (!contract) return alert("Please Connect Wallet First");
+            
+            try {
+                const price = type === 'normal' ? "0.01" : "0.05";
+                log(`Initiating Purchase...`);
+
+                let tx;
+                if (type === 'normal') {
+                    tx = await contract.buyNormalTicket({ value: ethers.parseEther(price) });
+                } else {
+                    tx = await contract.buyPremiumTicket({ value: ethers.parseEther(price) });
+                }
+
+                log("Transaction Broadcasted! Mining...");
+                await tx.wait();
+
+               
+                saveTransaction(type, tx.hash);
+
+                log("CONFIRMED: Ticket Minted.");
+                launchConfetti();
+
+            } catch (err) {
+                console.error(err);
+                log("Transaction Failed.", "error");
+            }
+        }
+
+        function launchConfetti() {
+            var duration = 3 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: Math.random(), y: Math.random() - 0.2 } }));
+            }, 250);
+        }
+    </script>
+</body>
+</html>
