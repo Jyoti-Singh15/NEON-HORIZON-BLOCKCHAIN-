@@ -17,7 +17,7 @@ contract TicketNFT is ERC721, Ownable {
     function buyNormalTicket() external payable {
         require(msg.value >= NORMAL_PRICE, "Insufficient ETH for Normal Ticket");
         _mintTicket(msg.sender, 1);
-        // INSTANTLY SEND MONEY TO YOU
+       
         (bool success, ) = payable(owner()).call{value: msg.value}("");
         require(success, "Transfer to owner failed");
     }
@@ -25,7 +25,7 @@ contract TicketNFT is ERC721, Ownable {
     function buyPremiumTicket() external payable {
         require(msg.value >= PREMIUM_PRICE, "Insufficient ETH for Premium Ticket");
         _mintTicket(msg.sender, 2);
-        // INSTANTLY SEND MONEY TO YOU
+        
         (bool success, ) = payable(owner()).call{value: msg.value}("");
         require(success, "Transfer to owner failed");
     }
@@ -36,8 +36,5 @@ contract TicketNFT is ERC721, Ownable {
         _safeMint(to, tokenId);
     }
 
-    function withdraw() external onlyOwner {
-        (bool success, ) = payable(owner()).call{value: address(this).balance}("");
-        require(success, "Withdraw failed");
-    }
+  
 }
